@@ -5,9 +5,10 @@
 // 2011-12-01 GONG Chen <chen.sst@gmail.com>
 //
 #include <chrono>
+#include <exception>
 #include <utility>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <rime/deployer.h>
 
 namespace rime {
@@ -82,10 +83,15 @@ bool Deployer::Run() {
   int failure = 0;
   do {
     while (auto task = NextTask()) {
-      if (task->Run(this))
-        ++success;
-      else
+      try {
+        if (task->Run(this))
+          ++success;
+        else
+          ++failure;
+      } catch (const std::exception& ex) {
         ++failure;
+        LOG(ERROR) << "Error deploying: " << ex.what();
+      }
       // boost::this_thread::interruption_point();
     }
     LOG(INFO) << success + failure << " tasks ran: " << success << " success, "
@@ -142,7 +148,7 @@ void Deployer::JoinMaintenanceThread() {
 }
 
 string Deployer::user_data_sync_dir() const {
-  return (boost::filesystem::path(sync_dir) / user_id).string();
+  return (std::filesystem::path(sync_dir) / user_id).string();
 }
 
 }  // namespace rime

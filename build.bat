@@ -264,6 +264,10 @@ if %build_deps% == 1 (
 if %build_librime% == 0 goto exit
 
 set rime_cmake_flags=%common_cmake_flags%^
+ -DKyotoCabinet_STATIC_LIBRARY:PATH="F:\Rime\Official\Plugins\kyotocabinet"^
+ -DKyotoCabinet_INCLUDE_PATH:PATH="F:\Rime\Official\Plugins\kyotocabinet"^
+ -DZLIB_LIBRARY:PATH="F:\Rime\Official\vcpkg\installed\x64-windows\lib"^
+ -DZLIB_INCLUDE_DIR:PATH="F:\Rime\Official\vcpkg\installed\x64-windows\include"^
  -DBUILD_STATIC=ON^
  -DBUILD_SHARED_LIBS=%build_shared%^
  -DBUILD_TEST=%build_test%^
